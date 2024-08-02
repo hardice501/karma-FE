@@ -1,14 +1,20 @@
 import { createBrowserRouter } from 'react-router-dom';
-import { Box, Typography } from '@mui/material';
+import Home from '../pages/Home';
+import Work from '../pages/Work';
+
 
 const rootRouter = createBrowserRouter(
     [
         {
             path: '/',
             element: (
-                <Box>
-                    <Typography>Hello World</Typography>
-                </Box>
+                <Home />
+            )
+        },
+        {
+            path: '/work',
+            element: (
+                <Work />
             )
         },
     ],
