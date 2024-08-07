@@ -12,7 +12,7 @@ import CustomTypography from '../elements/CustomTypography';
 const TimeTable = ({ fontColor = 'black', data, isDevil }) => {
     const tableHeader = [
         isDevil ? '업보' : '덕',
-        isDevil ? '지금 집가면 남는 업보' : '지금 집가면 남는 덕',
+        isDevil ? '지금 집가면 남는 업보' : '지금 집가면 남는 업보',
         '노동시간', '남은 노동시간', '퇴근 가능시간',
     ];
 
