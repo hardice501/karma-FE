@@ -9,7 +9,13 @@ import { Box, Divider } from '@mui/material';
 import CustomTypography from '../elements/CustomTypography';
 
 
-const TimeTable = ({fontColor = 'black', data}) => {
+const TimeTable = ({ fontColor = 'black', data, isDevil }) => {
+    const tableHeader = [
+        isDevil ? '업보' : '덕',
+        isDevil ? '지금 집가면 남는 업보' : '지금 집가면 남는 덕',
+        '노동시간', '남은 노동시간', '퇴근 가능시간',
+    ];
+
     return (
         <TableContainer
             component={Box}
@@ -22,13 +28,14 @@ const TimeTable = ({fontColor = 'black', data}) => {
                 backgroundColor: fontColor === 'black' ? 'white' : 'black',
             }}
         >
-            <Table aria-label="simple table" sx={{ height: '100%', tableLayout: 'fixed' }}>
+            <Table aria-label='simple table' sx={{ height: '100%', tableLayout: 'fixed' }}>
                 <TableHead sx={{ height: '50%' }}>
-                    <TableRow sx={{ height: '100%',
+                    <TableRow sx={{
+                        height: '100%',
                     }}>
-                        {['덕', '지금 집가면 남는 덕', '노동시간', '남은 노동시간', '퇴근 가능시간'].map((header, index) => (
+                        {tableHeader.map((header, index) => (
                             <TableCell
-                                align="center"
+                                align='center'
                                 key={index}
                                 sx={{
                                     height: '100%',
@@ -48,7 +55,7 @@ const TimeTable = ({fontColor = 'black', data}) => {
                     <TableRow sx={{ height: '100%' }}>
                         {Object.values(data).map((value, index) => (
                             <TableCell
-                                align="center"
+                                align='center'
                                 key={index}
                                 sx={{
                                     height: '100%',
