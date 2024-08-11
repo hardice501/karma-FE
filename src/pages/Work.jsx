@@ -1,4 +1,4 @@
-import { Box, CircularProgress, List, ListItem } from '@mui/material';
+import { Box, CircularProgress, List, ListItem, ListItemButton } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { ReactComponent as BtnBut } from '../icons/btn_but.svg';
 import { ReactComponent as BtnDevil } from '../icons/btn-devil.svg';
@@ -9,6 +9,7 @@ import { ReactComponent as UnHappy } from '../icons/unhappy.svg';
 import TimeTable from '../components/TimeTable';
 import CustomTypography from '../elements/CustomTypography';
 import axios from 'axios';
+import { useSearchParams } from 'react-router-dom';
 
 const NAME_DATA = [
     'Thomas',
@@ -76,35 +77,43 @@ const Work = () => {
         heaven: '-',
     });
     const [fontColor, setFontColor] = useState('black');
+    const [searchParams, setSearchParams] = useSearchParams();
+
+    useEffect(() => {
+        async function fetchUserKarma (name) {
+            setIsLoading(true); // 로딩 시작
+            try {
+                const response = await axios.get(`http://192.168.40.11:30000/hc/test/karma?name=${name}`);
+                const data = response.data;
+    
+                setDuck({
+                    duck: formatTime(data.karma),
+                    leaveDuck: formatTime(data.remain_karma_time_if_check_out_now),
+                    workingTime: formatTime(data.sum_of_working_time),
+                    hell: formatTime(data.remain_working_time),
+                    heaven: formatDate(new Date(data.check_out_time)),
+                });
+    
+                setIsDevil(data.karma.isKarma);
+                setIsHappy(Math.random() >= 0.5);
+            } catch (error) {
+                setDuck({
+                    duck: '-',
+                    leaveDuck: '-',
+                    workingTime: '-',
+                    hell: '-',
+                    heaven: '-',
+                });
+                setIsLoading(false);
+            } finally {
+                setIsLoading(false);
+            }
+        }
+        fetchUserKarma(searchParams.get('name'));
+    }, [searchParams]);
 
     const handleClickName = async (name) => {
-        setIsLoading(true); // 로딩 시작
-        try {
-            const response = await axios.get(`http://192.168.40.11:30000/hc/test/karma?name=${name}`);
-            const data = response.data;
-
-            setDuck({
-                duck: formatTime(data.karma),
-                leaveDuck: formatTime(data.remain_karma_time_if_check_out_now),
-                workingTime: formatTime(data.sum_of_working_time),
-                hell: formatTime(data.remain_working_time),
-                heaven: formatDate(new Date(data.check_out_time)),
-            });
-
-            setIsDevil(data.karma.isKarma);
-            setIsHappy(Math.random() >= 0.5);
-        } catch (error) {
-            setDuck({
-                duck: '-',
-                leaveDuck: '-',
-                workingTime: '-',
-                hell: '-',
-                heaven: '-',
-            });
-            setIsLoading(false);
-        } finally {
-            setIsLoading(false);
-        }
+        setSearchParams({name});
     };
 
     const formatTime = (timeData) => {
@@ -199,6 +208,7 @@ const Work = () => {
                         borderColor: 'black',
                         borderWidth: '3px',
                         borderStyle: 'solid',
+                        overflow: 'hidden'
                     }}>
                         <List sx={{
                             width: '100%',
@@ -218,10 +228,19 @@ const Work = () => {
                                         borderColor: isDevil ? 'white' : '#0000001F',
                                     }}
                                     onClick={() => handleClickName(name)}
+                                    disablePadding
                                 >
-                                    <CustomTypography fontSize={14} sx={{ fontWeight: '400', color: fontColor }}>
-                                        {name}
-                                    </CustomTypography>
+                                    <ListItemButton selected={searchParams.get('name') === name} sx={{
+                                        ...(isDevil && {
+                                            '&.Mui-selected, &.Mui-selected:hover': {
+                                                bgcolor: 'red'
+                                            }
+                                        })
+                                    }}>
+                                        <CustomTypography fontSize={14} sx={{ fontWeight: '400', color: fontColor }}>
+                                            {name}
+                                        </CustomTypography>
+                                    </ListItemButton>
                                 </ListItem>
                             ))}
                         </List>
